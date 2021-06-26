@@ -1,1 +1,1 @@
-web: bin/valorant-tips
+web: bin/valorant_tips
