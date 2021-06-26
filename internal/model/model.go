@@ -25,8 +25,8 @@ func (i *Agent) Delete(tx *gorm.DB, id uint) error {
 	return tx.Delete(i, id).Error
 }
 
-type Inputs []Agent
+type Agents []Agent
 
-func (i *Inputs) Load(tx *gorm.DB) error {
+func (i *Agents) Load(tx *gorm.DB) error {
 	return tx.Find(i).Order("ID asc").Error
 }
