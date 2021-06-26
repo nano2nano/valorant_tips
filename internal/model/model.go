@@ -6,27 +6,32 @@ import (
 
 type Agent struct {
 	gorm.Model
-	Name     string `gorm:"column:name;not null"`
-	Ability1 int    `gorm:"column:ability1;not null"`
-	Ability2 int    `gorm:"column:ability2;not null"`
-	Ability3 int    `gorm:"column:ability3;not null"`
-	Ability4 int    `gorm:"column:ability4;not null"`
+	Name      string    `gorm:"not null"`
+	Abilities []Ability `gorm:"not null"`
 }
 
-func (i *Agent) Save(tx *gorm.DB) error {
-	return tx.Create(i).Error
+func (a *Agent) Save(tx *gorm.DB) error {
+	return tx.Create(a).Error
 }
 
-func (i *Agent) Load(tx *gorm.DB, id uint) error {
-	return tx.Take(i, id).Error
+func (a *Agent) Load(tx *gorm.DB, id uint) error {
+	return tx.Preload("Abilities").Find(a).Order("ID").Error
 }
 
-func (i *Agent) Delete(tx *gorm.DB, id uint) error {
-	return tx.Delete(i, id).Error
+func (a *Agent) Delete(tx *gorm.DB, id uint) error {
+	return tx.Delete(a, id).Error
 }
 
 type Agents []Agent
 
-func (i *Agents) Load(tx *gorm.DB) error {
-	return tx.Find(i).Order("ID asc").Error
+func (a *Agents) Load(tx *gorm.DB) error {
+	return tx.Preload("Abilities").Find(a).Order("ID asc").Error
+}
+
+type Ability struct {
+	gorm.Model
+	Name        string `gorm:"not null"`
+	IconName    string
+	Description string `gorm:"not null"`
+	AgentID     uint
 }

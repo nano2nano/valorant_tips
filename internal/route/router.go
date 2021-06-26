@@ -21,5 +21,9 @@ func Init() *echo.Echo {
 
 	// Routes
 	e.GET("/", api.Status())
+	v1 := e.Group("/api/v1")
+	agent := v1.Group("/agent")
+	agent.GET("", api.GetAgents())
+	agent.GET("/:id", api.GetAgent())
 	return e
 }
