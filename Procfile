@@ -1,1 +1,1 @@
-web: bin/create_dataset
+web: bin/valorant-tips
