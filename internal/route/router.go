@@ -25,5 +25,8 @@ func Init() *echo.Echo {
 	agent := v1.Group("/agent")
 	agent.GET("", api.GetAgents())
 	agent.GET("/:id", api.GetAgent())
+	ability := v1.Group("/ability")
+	ability.GET("", api.GetAbilities())
+	ability.GET("/:id", api.GetAbility())
 	return e
 }

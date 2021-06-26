@@ -42,3 +42,31 @@ func GetAgents() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, agents)
 	}
 }
+
+func GetAbility() echo.HandlerFunc {
+	return func(c echo.Context) (err error) {
+		id, err := strconv.ParseInt(c.Param("id"), 0, 64)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "Invalid id.")
+		}
+		tx := c.Get("Tx").(*gorm.DB)
+
+		ability := new(model.Ability)
+		if err := ability.Load(tx, uint(id)); err != nil {
+			return echo.NewHTTPError(http.StatusNotFound, "Does not exists.")
+		}
+		return c.JSON(http.StatusOK, ability)
+	}
+}
+
+func GetAbilities() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		tx := c.Get("Tx").(*gorm.DB)
+
+		abilities := new(model.Abilities)
+		if err := abilities.Load(tx); err != nil {
+			return echo.NewHTTPError(http.StatusNotFound, "Does not exists.")
+		}
+		return c.JSON(http.StatusOK, abilities)
+	}
+}
