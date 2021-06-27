@@ -191,3 +191,15 @@ func GetTips() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, tips)
 	}
 }
+
+func GetSides() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		tx := c.Get("Tx").(*gorm.DB)
+
+		sides := new(model.Sides)
+		if err := sides.Load(tx); err != nil {
+			return echo.NewHTTPError(http.StatusNotFound, "Does not exists.")
+		}
+		return c.JSON(http.StatusOK, sides)
+	}
+}

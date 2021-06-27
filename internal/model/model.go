@@ -113,6 +113,12 @@ func (t *Tip) Delete(tx *gorm.DB, id uint) error {
 	return tx.Delete(t, id).Error
 }
 
+type Sides []Side
+
+func (s *Sides) Load(tx *gorm.DB) error {
+	return tx.Find(s).Order("ID asc").Error
+}
+
 type Tips []Tip
 
 func (t *Tips) Load(tx *gorm.DB) error {

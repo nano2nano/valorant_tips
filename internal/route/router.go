@@ -36,5 +36,7 @@ func Init() *echo.Echo {
 	tip.POST("", api.PostTip())
 	tip.GET("", api.GetTips())
 	tip.GET("/:id", api.GetTip())
+	side := v1.Group("/side")
+	side.GET("", api.GetSides())
 	return e
 }
