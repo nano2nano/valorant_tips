@@ -11,7 +11,7 @@ import (
 
 func Init() *gorm.DB {
 	db := getSession()
-	db.AutoMigrate(&model.Agent{}, &model.Ability{}, &model.Map{})
+	db.AutoMigrate(&model.Agent{}, &model.Ability{}, &model.Map{}, &model.Tip{}, &model.Side{})
 	return db
 }
 

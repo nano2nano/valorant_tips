@@ -76,3 +76,45 @@ type Maps []Map
 func (m *Maps) Load(tx *gorm.DB) error {
 	return tx.Find(m).Order("ID asc").Error
 }
+
+type Tip struct {
+	gorm.Model
+	StandingPosition string `gorm:"column:standing_position;not null"`
+	AimPosition      string `gorm:"column:aim_position;not null"`
+	Description      string `gorm:"not null"`
+	SideID           uint   `gorm:"not null"`
+	Side             Side
+	MapID            uint `gorm:"not null"`
+	Map              Map
+	AbilityID        uint `gorm:"not null"`
+	Ability          Ability
+	Good             int `gorm:"not null;default:0"`
+	Bad              int `gorm:"not null;default:0"`
+}
+
+type Side struct {
+	ID   uint   `gorm:"primarykey"`
+	Name string `gorm:"not null"`
+}
+
+func (s *Side) Save(tx *gorm.DB) error {
+	return tx.Create(s).Error
+}
+
+func (t *Tip) Save(tx *gorm.DB) error {
+	return tx.Create(t).Error
+}
+
+func (t *Tip) Load(tx *gorm.DB, id uint) error {
+	return tx.Take(t, id).Error
+}
+
+func (t *Tip) Delete(tx *gorm.DB, id uint) error {
+	return tx.Delete(t, id).Error
+}
+
+type Tips []Tip
+
+func (t *Tips) Load(tx *gorm.DB) error {
+	return tx.Preload("Side").Preload("Map").Preload("Ability").Find(t).Order("ID asc").Error
+}

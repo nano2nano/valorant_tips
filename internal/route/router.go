@@ -32,5 +32,9 @@ func Init() *echo.Echo {
 	_map.GET("", api.GetMaps())
 	// _map.POST("", api.PostMap())
 	_map.GET("/:id", api.GetMap())
+	tip := v1.Group("/tip")
+	tip.POST("", api.PostTip())
+	tip.GET("", api.GetTips())
+	tip.GET("/:id", api.GetTip())
 	return e
 }
