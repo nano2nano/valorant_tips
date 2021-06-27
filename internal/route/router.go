@@ -30,7 +30,7 @@ func Init() *echo.Echo {
 	ability.GET("/:id", api.GetAbility())
 	_map := v1.Group("/map")
 	_map.GET("", api.GetMaps())
-	_map.POST("", api.PostMap())
+	// _map.POST("", api.PostMap())
 	_map.GET("/:id", api.GetMap())
 	return e
 }
