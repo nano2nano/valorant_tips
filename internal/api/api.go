@@ -3,15 +3,12 @@ package api
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 
-	"github.com/dropbox/dropbox-sdk-go-unofficial/v6/dropbox"
-	"github.com/dropbox/dropbox-sdk-go-unofficial/v6/dropbox/files"
 	"github.com/labstack/echo/v4"
+	"github.com/nano2nano/valorant_tips/internal/cloud"
 	"github.com/nano2nano/valorant_tips/internal/model"
 	"github.com/olahol/go-imageupload"
 	"gorm.io/gorm"
@@ -225,41 +222,21 @@ func PostImg() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err)
 		}
-		config := dropbox.Config{
-			Token: os.Getenv("DROPBOX_TOKEN"),
-		}
-		client := files.New(config)
 		f_name := fmt.Sprintf("%s.jpeg", time.Now().Format("20060102150405"))
-		arg := files.NewCommitInfo("/" + f_name)
-
-		if _, err := client.Upload(arg, bytes.NewReader(thumb.Data)); err != nil {
+		if err := cloud.Upload(f_name, bytes.NewReader(thumb.Data)); err != nil {
 			return c.JSON(http.StatusBadGateway, err)
 		}
 
-		type res struct {
-			FileName string `json:"file_name"`
-		}
-
-		return c.JSON(http.StatusOK, res{FileName: f_name})
+		return c.String(http.StatusOK, f_name)
 	}
 }
 
 func GetImg() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		f_name := c.Param("name")
-		config := dropbox.Config{
-			Token: os.Getenv("DROPBOX_TOKEN"),
-		}
-		client := files.New(config)
-		arg := files.NewDownloadArg("/" + f_name)
-		_, file, err := client.Download(arg)
+		bs, err := cloud.Download(f_name)
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, err)
-		}
-
-		bs, err := ioutil.ReadAll(file)
-		if err != nil {
-			panic(err)
+			c.JSON(http.StatusBadRequest, err)
 		}
 
 		i := &imageupload.Image{
