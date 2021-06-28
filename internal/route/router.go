@@ -38,5 +38,8 @@ func Init() *echo.Echo {
 	tip.GET("/:id", api.GetTip())
 	side := v1.Group("/side")
 	side.GET("", api.GetSides())
+	img := v1.Group("/img")
+	img.POST("/upload", api.PostImg())
+	img.GET("/:name", api.GetImg())
 	return e
 }
