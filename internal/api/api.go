@@ -9,6 +9,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/nano2nano/valorant_tips/internal/cloud"
+	"github.com/nano2nano/valorant_tips/internal/image"
 	"github.com/nano2nano/valorant_tips/internal/model"
 	"github.com/olahol/go-imageupload"
 	"gorm.io/gorm"
@@ -133,8 +134,24 @@ func GetTip() echo.HandlerFunc {
 
 func PostTip() echo.HandlerFunc {
 	return func(c echo.Context) (err error) {
-		sp_path := c.FormValue("sp_path")
-		ap_path := c.FormValue("ap_path")
+		img, err := imageupload.Process(c.Request(), "stand_img")
+		if err != nil {
+			return c.JSON(http.StatusBadGateway, err)
+		}
+		f_name_stand, err := image.SaveImage(img)
+		if err != nil {
+			return c.JSON(http.StatusBadGateway, err)
+		}
+
+		img, err = imageupload.Process(c.Request(), "aim_img")
+		if err != nil {
+			return c.JSON(http.StatusBadGateway, err)
+		}
+		f_name_aim, err := image.SaveImage(img)
+		if err != nil {
+			return c.JSON(http.StatusBadGateway, err)
+		}
+
 		side_id, err := strconv.ParseInt(c.FormValue("side_id"), 0, 64)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, "Invalid id.")
@@ -147,7 +164,7 @@ func PostTip() echo.HandlerFunc {
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, "Invalid id.")
 		}
-		t := model.Tip{StandingPosition: sp_path, AimPosition: ap_path, SideID: uint(side_id), MapID: uint(map_id), AbilityID: uint(ability_id)}
+		t := model.Tip{StandingPosition: f_name_stand, AimPosition: f_name_aim, SideID: uint(side_id), MapID: uint(map_id), AbilityID: uint(ability_id)}
 		tx := c.Get("Tx").(*gorm.DB)
 
 		if err := t.Save(tx); err != nil {
