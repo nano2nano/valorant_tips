@@ -79,6 +79,7 @@ func (m *Maps) Load(tx *gorm.DB) error {
 
 type Tip struct {
 	gorm.Model
+	Title            string `gorm:"not null"`
 	StandingPosition string `gorm:"column:standing_position;not null"`
 	AimPosition      string `gorm:"column:aim_position;not null"`
 	Description      string `gorm:"not null"`

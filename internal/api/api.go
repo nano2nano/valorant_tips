@@ -164,8 +164,9 @@ func PostTip() echo.HandlerFunc {
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, "Invalid id.")
 		}
+		title := c.FormValue("title")
 		description := c.FormValue("description")
-		t := model.Tip{StandingPosition: f_name_stand, AimPosition: f_name_aim, SideID: uint(side_id), MapID: uint(map_id), AbilityID: uint(ability_id), Description: description}
+		t := model.Tip{StandingPosition: f_name_stand, AimPosition: f_name_aim, SideID: uint(side_id), MapID: uint(map_id), AbilityID: uint(ability_id), Description: description, Title: title}
 		tx := c.Get("Tx").(*gorm.DB)
 
 		if err := t.Save(tx); err != nil {
